@@ -16,7 +16,7 @@ class SaporiDItalia extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       getPages: AppRoutePage.routes,
-      initialRoute: AppRouteName.root,
+      initialRoute: AppRouteName.login,
       theme: ThemeData(
         primaryColor: primary,
         scaffoldBackgroundColor: background,

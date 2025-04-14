@@ -4,7 +4,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:saporidiitalia/utils/color.dart';
 import 'package:saporidiitalia/widgets/tabbar_item.dart';
 import 'package:saporidiitalia/pages/home/home_view.dart';
+import 'package:saporidiitalia/pages/profile/profile_view.dart';
+import 'package:saporidiitalia/pages/profile/profile_controller.dart';
 import 'package:saporidiitalia/pages/root/root_controller.dart';
+import 'package:saporidiitalia/routes/app_route_name.dart';
 import 'package:get/get.dart';
 
 class RootView extends GetView<RootController> {
@@ -12,6 +15,11 @@ class RootView extends GetView<RootController> {
 
   @override
   Widget build(BuildContext context) {
+    // Ensure controllers are initialized
+    if (!Get.isRegistered<ProfileController>()) {
+      Get.put(ProfileController());
+    }
+
     return Obx(
       () => Scaffold(
         resizeToAvoidBottomInset: false,
@@ -19,12 +27,15 @@ class RootView extends GetView<RootController> {
         bottomNavigationBar: _buildFooter(),
         floatingActionButton: FloatingActionButton(
           backgroundColor: secodPrimary,
-          child: Container(
+          child: SvgPicture.asset(
+            "assets/icons/cart.svg",
             width: 25,
             height: 25,
-            child: SvgPicture.asset("assets/icons/cart.svg", color: primary),
+            color: primary,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Get.toNamed(AppRouteName.cart);
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
@@ -32,9 +43,19 @@ class RootView extends GetView<RootController> {
   }
 
   Widget _buildBody() {
+    final profileController = Get.isRegistered<ProfileController>()
+        ? Get.find<ProfileController>()
+        : Get.put(ProfileController());
+
     return IndexedStack(
-      index: controller.tabIndex.value, // current index you select
-      children: [HomeView(), Container()], // your pages for the tabs here
+      index: controller.tabIndex.value,
+      children: [
+        HomeView(),
+        GetBuilder<ProfileController>(
+          init: profileController,
+          builder: (_) => ProfileView(),
+        ),
+      ],
     );
   }
 
